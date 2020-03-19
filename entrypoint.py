@@ -128,10 +128,9 @@ def main():
                 break
             else:
                 sleep(5)
-                
+
         run_command(f"kaggle kernels output {username}/{slug}")
-        run_command("tree ~/")
-        run_command(f'kaggle competitions submit -c {username}/{competition_sources[0]} -f submission.csv -m "the same submission, from Docker shell"')
+        run_command(f'kaggle competitions submit -c {username}/{competition_sources[0]} -f /github/workspace/submission.csv -m "the same submission, from Docker shell"')
             
 
 if __name__ == "__main__":
