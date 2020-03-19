@@ -4,6 +4,7 @@ import json
 import tempfile
 import subprocess
 import shutil
+from time import sleep
 
 
 def to_json(data, path):
@@ -118,9 +119,12 @@ def main():
         shutil.copyfile(code_file, dst)
 
         run_command(f"kaggle kernels push -p {tmpdir}")
-        status = run_command(f"kaggle kernels status {username}/{slug}")
-        print(status)
-
+        while not run_command(f"kaggle kernels status {username}/{slug}"):
+            sleep(10)
+        run_command(f"kaggle kernels output {username}/{slug}")
+        run_command("tree ~/")
+        run_command(f'kaggle competitions submit -c {username}/{competition_sources[0]} -f submission.csv -m "the same submission, from Docker shell"')
+            
 
 if __name__ == "__main__":
     main()
