@@ -118,7 +118,8 @@ def main():
         shutil.copyfile(code_file, dst)
 
         run_command(f"kaggle kernels push -p {tmpdir}")
-        run_command(f"kaggle kernels status {username}/{slug}")
+        # run_command(f"kaggle kernels status {username}/{slug}")
+        print('Yohoho!!')
 
 
 if __name__ == "__main__":
