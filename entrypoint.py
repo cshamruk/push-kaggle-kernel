@@ -12,7 +12,7 @@ def to_json(data, path):
         json.dump(data, f, indent=2, sort_keys=True)
 
 
-def run_command(command, verbose=True):
+def run_command(command, verbose=True, return_stdout=False):
     print("Executing:", command)
     p = subprocess.Popen(
         [command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
@@ -34,6 +34,9 @@ def run_command(command, verbose=True):
 
         if stderr != "":
             print(stderr)
+
+    if return_stdout:
+        return stdout
 
     return p.returncode
 
@@ -119,8 +122,13 @@ def main():
         shutil.copyfile(code_file, dst)
 
         run_command(f"kaggle kernels push -p {tmpdir}")
-        while not run_command(f"kaggle kernels status {username}/{slug}"):
-            sleep(10)
+        while True:
+            status = run_command(f"kaggle kernels status {username}/{slug}",return_stdout=True)
+            if "complete" in status:
+                break
+            else:
+                sleep(5)
+                
         run_command(f"kaggle kernels output {username}/{slug}")
         run_command("tree ~/")
         run_command(f'kaggle competitions submit -c {username}/{competition_sources[0]} -f submission.csv -m "the same submission, from Docker shell"')
